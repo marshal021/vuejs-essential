@@ -55,8 +55,6 @@ const actions = {
   ...moreActions
 }
 
-
-// 添加 getters
 const getters = {
   getArticleById: (state, getters) => (id) => {
     // 使用派生状态 computedArticles 作为所有文章
