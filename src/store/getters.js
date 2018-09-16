@@ -147,3 +147,30 @@ export const getArticlesByFilter = (state, getters) => (filter) => {
 
   return filteredArticles
 }
+
+export const getArticlesByKeyword = (state, getters) => (keyword) => {
+  let articles = getters.computedArticles
+  // 搜索结果
+  let results = []
+
+  if (Array.isArray(articles)) {
+    articles.forEach((article) => {
+      let { articleId, title, content } = article
+      // 该正则表示文章标题或内容中的关键字
+      const regex = new RegExp(`(${keyword})`, 'gi')
+
+      if (title.indexOf(keyword) !== -1 || content.indexOf(keyword) !== -1) {
+        
+        const url = `${state.origin}/articles/${articleId}/content`
+        // 给文章标题中的关键字加上高亮，$1 匹配第一个括号的内容
+        title = title.replace(regex, '<span class="highlight">$1</span>')
+        // 给文章内容中的关键字加上高亮，只取内容前 100 个字
+        content = content.substr(0, 100).replace(regex, '<span class="highlight">$1</span>')
+        // 等价于 results.push(Object.assign({}, article, { url: url, title: title, content: content })) 
+        results.push({...article, ...{ url, title, content }})
+      }
+    })
+  }
+
+  return results
+}
